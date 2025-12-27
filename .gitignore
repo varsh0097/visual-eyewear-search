@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+*.pkl
+*.index
+data/raw_images/
+data/embeddings/*.pkl
+data/embeddings/*.index
+data/feedback/*.csv
+.streamlit/
