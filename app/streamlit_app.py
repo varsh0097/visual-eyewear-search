@@ -13,7 +13,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 import csv
 from datetime import datetime
-
+from search.smart_crop import smart_crop_eyewear
 from search.faiss_search import FaissSearchEngine
 
 # ================= CONFIG =================
@@ -124,8 +124,14 @@ def main():
     )
 
     if uploaded:
-        image = Image.open(uploaded).convert("RGB")
-        st.image(image, caption="Query Image", width=280)
+        original_image = Image.open(uploaded).convert("RGB")
+        image = smart_crop_eyewear(original_image)
+        st.image(
+        image,
+        caption="Query Image (Smart Cropped if face detected)",
+        width=280
+         )
+
 
         if st.button("Search"):
             img_tensor = preprocess(image).unsqueeze(0).to(DEVICE)
@@ -158,9 +164,10 @@ def main():
                 for i, item in enumerate(results):
                     with cols[i]:
                         st.image(
-                            load_display_image(item["image_path"]),
-                            use_container_width=True
+                        load_display_image(item["image_path"]),
+                        width=220
                         )
+
                         st.caption(f"{item['brand']} | {item['predicted_style']}")
                         st.text(f"Price: ₹{item['price']}")
 
